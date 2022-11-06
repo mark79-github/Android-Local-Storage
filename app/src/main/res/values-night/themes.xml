@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.RetrofitYoutube" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.AndroidLocalStorage" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/space_cadet</item>
         <item name="colorPrimaryVariant">@color/indigo</item>

@@ -24,7 +24,7 @@ abstract class CountryDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     CountryDatabase::class.java,
-                    "country_db"
+                    "country.db"
                 ).allowMainThreadQueries()
                     .build()
                 INSTANCE = instance

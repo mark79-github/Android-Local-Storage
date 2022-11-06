@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Android Local Storage</string>
+    <string name="has_internet_connection">is_connected</string>
+    <string name="intent_extra_attribute_country_name">name</string>
+    <string name="error_message_no_connection">Application exiting, needs an active internet connection …</string>
+    <string name="error_message_outdated_data">No network connection detected, data may be outdated …</string>
+    <string name="more_info">More Info:</string>
+    <string name="region">Region:</string>
+    <string name="subregion">Subregion:</string>
+    <string name="population">Population:</string>
+    <string name="area">Area:</string>
+    <string name="native_name">Native name:</string>
+    <string name="numeric_code">Numeric code:</string>
+    <string name="acronym">Аcronym:</string>
+    <string name="updated_records_caption">Records was last updated at:</string>
+    <string name="count_records_caption">Records count:</string>
 </resources>

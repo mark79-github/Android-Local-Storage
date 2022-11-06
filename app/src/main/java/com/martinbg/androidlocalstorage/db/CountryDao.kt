@@ -11,7 +11,7 @@ interface CountryDao {
     @Query("SELECT * FROM country")
     fun getAll(): List<Country>
 
-    @Query("SELECT * FROM country where country.name = :name")
+    @Query("SELECT * FROM country WHERE country.name = :name")
     fun getCountryByName(name: String): Country
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -28,9 +28,6 @@ interface CountryDao {
 
     @Delete
     fun delete(country: Country)
-
-    @Delete
-    fun deleteAll(country: List<Country>)
 
     @Insert
     fun insertInfo(info: Info)

@@ -10,12 +10,15 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import com.martinbg.androidlocalstorage.R
 import com.martinbg.androidlocalstorage.adapter.CountryAdapter
 import com.martinbg.androidlocalstorage.api.ApiClient
 import com.martinbg.androidlocalstorage.api.ApiServices
 import com.martinbg.androidlocalstorage.data.Country
 import com.martinbg.androidlocalstorage.data.Info
 import com.martinbg.androidlocalstorage.databinding.ActivityMainBinding
+import com.martinbg.androidlocalstorage.db.CountryDao
 import com.martinbg.androidlocalstorage.db.CountryDatabase
 import com.martinbg.androidlocalstorage.utils.Prefs
 import retrofit2.Call
@@ -36,32 +39,38 @@ class MainActivity : AppCompatActivity() {
         ApiClient().getClient().create(ApiServices::class.java)
     }
 
+    private val dao: CountryDao by lazy {
+        CountryDatabase.getDatabase(this).countryDao()
+    }
+
+    private val networkRequest: NetworkRequest by lazy {
+        NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .build()
+    }
+
+    private val connectivityManager: ConnectivityManager by lazy {
+        getSystemService(ConnectivityManager::class.java)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        connectivityManager.requestNetwork(networkRequest, networkCallback)
         Prefs.init(applicationContext)
 
-        val networkRequest = NetworkRequest.Builder()
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-            .build()
+        Prefs[R.string.has_internet_connection.toString()] =
+            connectivityManager.activeNetwork != null
 
-        val connectivityManager =
-            getSystemService(ConnectivityManager::class.java) as ConnectivityManager
-        connectivityManager.requestNetwork(networkRequest, networkCallback)
-        if (connectivityManager.activeNetwork == null) {
-            Prefs["isConnected"] = false
-        }
+        binding.progressBar.visibility = View.VISIBLE
+        binding.layoutInfo.visibility = View.GONE
 
-        binding.tvLastFetchedDatetime.visibility = View.GONE
-        binding.tvRecordsCount.visibility = View.GONE
-
-        if (Prefs["isConnected"]) {
+        if (Prefs[R.string.has_internet_connection.toString()]) {
             binding.apply {
-                progressBar.visibility = View.VISIBLE
                 val countries = api.getCountries()
                 countries.enqueue(object : Callback<List<Country>> {
                     override fun onResponse(
@@ -71,7 +80,6 @@ class MainActivity : AppCompatActivity() {
                         progressBar.visibility = View.GONE
                         when (response.code()) {
                             in 200..299 -> {
-                                Log.d("Response Code", " success messages : ${response.code()}")
                                 response.body()?.let { body ->
                                     body.let { data ->
                                         if (data.isNotEmpty()) {
@@ -81,9 +89,6 @@ class MainActivity : AppCompatActivity() {
                                                     LinearLayoutManager(this@MainActivity)
                                                 adapter = countryAdapter
                                             }
-                                            val dao =
-                                                CountryDatabase.getDatabase(applicationContext)
-                                                    .countryDao()
                                             dao.insertAll(data)
                                             val date: Date = Calendar.getInstance().time
                                             val dateFormat: DateFormat =
@@ -96,28 +101,15 @@ class MainActivity : AppCompatActivity() {
                                             dao.insertInfo(Info(strDate))
                                             tvLastFetchedDatetime.text = dao.getLastInfo()!!.date
                                             tvRecordsCount.text = data.size.toString()
-                                            binding.tvLastFetchedDatetime.visibility = View.VISIBLE
-                                            binding.tvRecordsCount.visibility = View.VISIBLE
+                                            binding.layoutInfo.visibility = View.VISIBLE
                                         }
                                     }
                                 }
                             }
-                            in 300..399 -> {
+                            else -> {
                                 Log.d(
                                     "Response Code",
-                                    " Redirection messages : ${response.code()}"
-                                )
-                            }
-                            in 400..499 -> {
-                                Log.d(
-                                    "Response Code",
-                                    " Client error responses : ${response.code()}"
-                                )
-                            }
-                            in 500..599 -> {
-                                Log.d(
-                                    "Response Code",
-                                    " Server error responses : ${response.code()}"
+                                    "Response Code : ${response.code()}"
                                 )
                             }
                         }
@@ -125,58 +117,52 @@ class MainActivity : AppCompatActivity() {
 
                     override fun onFailure(call: Call<List<Country>>, t: Throwable) {
                         progressBar.visibility = View.GONE
-                        Log.e("onFailure", "Err : ${t.message}")
+                        Log.e("onFailure", "Error : ${t.message}")
                     }
                 })
 
             }
         } else {
-            val dao = CountryDatabase.getDatabase(this).countryDao()
             val data = dao.getAll()
-
-            when (data.size) {
-                0 -> {
-                    Toast.makeText(
-                        this,
-                        "Application exiting, need an active internet connection ..",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    finish()
+            if (data.isEmpty()) {
+                Toast.makeText(
+                    this,
+                    R.string.error_message_no_connection,
+                    Toast.LENGTH_LONG
+                ).show()
+                finish()
+            } else {
+                countryAdapter.differ.submitList(data)
+                binding.apply {
+                    progressBar.visibility = View.GONE
+                    recyclerview.apply {
+                        layoutManager =
+                            LinearLayoutManager(this@MainActivity)
+                        adapter = countryAdapter
+                    }
+                    val info = dao.getLastInfo()
+                    tvLastFetchedDatetime.text = info?.date
+                    tvRecordsCount.text = data.size.toString()
+                    layoutInfo.visibility = View.VISIBLE
                 }
-                else -> {
-                    Toast.makeText(
-                        this,
-                        "No network connection found, data may be outdated ...",
-                        Toast.LENGTH_LONG
-                    ).show()
-
-                }
+                Snackbar.make(
+                    binding.root,
+                    R.string.error_message_outdated_data,
+                    Snackbar.LENGTH_LONG
+                ).show()
             }
-
-            countryAdapter.differ.submitList(data)
-            binding.progressBar.visibility = View.GONE
-            binding.recyclerview.apply {
-                layoutManager =
-                    LinearLayoutManager(this@MainActivity)
-                adapter = countryAdapter
-            }
-            val info = dao.getLastInfo()
-            binding.tvLastFetchedDatetime.text = info?.date ?: "No data available"
-            binding.tvRecordsCount.text = data.size.toString()
-            binding.tvLastFetchedDatetime.visibility = View.VISIBLE
-            binding.tvRecordsCount.visibility = View.VISIBLE
         }
     }
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
-            Prefs["isConnected"] = true
+            Prefs[R.string.has_internet_connection.toString()] = true
         }
 
         override fun onLost(network: Network) {
             super.onLost(network)
-            Prefs["isConnected"] = false
+            Prefs[R.string.has_internet_connection.toString()] = false
         }
     }
 }

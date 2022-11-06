@@ -26,19 +26,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:id="@+id/img_country_flag"
-                    android:layout_width="300dp"
-                    android:layout_height="200dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="20dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/flag_placeholder"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:shapeAppearanceOverlay="@style/RoundedImageView" />
+        <ImageView
+            android:id="@+id/img_country_flag"
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/flag_placeholder"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/rounded_image_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -98,7 +98,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
-                    android:text="More Info:"
+                    android:text="@string/more_info"
                     android:textColor="@color/sandy_tan"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -111,12 +111,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="Region: "
+                    android:paddingEnd="6dp"
+                    android:text="@string/region"
                     android:textColor="@color/sandy_tan"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_country_more_info" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_country_more_info"
+                    tools:ignore="RtlSymmetry" />
 
                 <TextView
                     android:id="@+id/tv_region_data"
@@ -132,12 +134,14 @@
                     android:id="@+id/tv_subregion_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Subregion: "
+                    android:paddingEnd="6dp"
+                    android:text="@string/subregion"
                     android:textColor="@color/sandy_tan"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_region_title" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_region_title"
+                    tools:ignore="RtlSymmetry" />
 
                 <TextView
                     android:id="@+id/tv_subregion_data"
@@ -154,12 +158,14 @@
                     android:id="@+id/tv_population_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Population: "
+                    android:paddingEnd="6dp"
+                    android:text="@string/population"
                     android:textColor="@color/sandy_tan"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_subregion_title" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_subregion_title"
+                    tools:ignore="RtlSymmetry" />
 
                 <TextView
                     android:id="@+id/tv_population_data"
@@ -176,12 +182,14 @@
                     android:id="@+id/tv_area_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Area: "
+                    android:paddingEnd="6dp"
+                    android:text="@string/area"
                     android:textColor="@color/sandy_tan"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_population_data" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_population_data"
+                    tools:ignore="RtlSymmetry" />
 
                 <TextView
                     android:id="@+id/tv_area_data"
@@ -198,12 +206,14 @@
                     android:id="@+id/tv_native_name_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Native name: "
+                    android:paddingEnd="6dp"
+                    android:text="@string/native_name"
                     android:textColor="@color/sandy_tan"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_area_data" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_area_data"
+                    tools:ignore="RtlSymmetry" />
 
                 <TextView
                     android:id="@+id/tv_native_name_data"
@@ -220,12 +230,14 @@
                     android:id="@+id/tv_numeric_code_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Numeric code: "
+                    android:paddingEnd="6dp"
+                    android:text="@string/numeric_code"
                     android:textColor="@color/sandy_tan"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_native_name_data" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_native_name_data"
+                    tools:ignore="RtlSymmetry" />
 
                 <TextView
                     android:id="@+id/tv_numeric_code_data"
@@ -242,12 +254,14 @@
                     android:id="@+id/tv_acronym_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Аcronym: "
+                    android:paddingEnd="6dp"
+                    android:text="@string/acronym"
                     android:textColor="@color/sandy_tan"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_numeric_code_data" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_numeric_code_data"
+                    tools:ignore="RtlSymmetry" />
 
                 <TextView
                     android:id="@+id/tv_acronym_data"

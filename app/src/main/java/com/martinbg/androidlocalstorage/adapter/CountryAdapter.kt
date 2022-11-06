@@ -5,11 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import coil.size.Scale
 import com.martinbg.androidlocalstorage.R
 import com.martinbg.androidlocalstorage.data.Country
 import com.martinbg.androidlocalstorage.databinding.ItemCountryLayoutBinding
@@ -42,31 +42,26 @@ class CountryAdapter : RecyclerView.Adapter<CountryAdapter.ViewHolder>() {
     }
 
     inner class ViewHolder : RecyclerView.ViewHolder(binding.root) {
-
-        val isConnected: Boolean = Prefs["isConnected"]
-
         fun bind(item: Country) {
             binding.apply {
                 tvCName.text = item.name
                 tvCCapital.text = item.capital
                 tvCRegion.text = item.region
-
-                when (isConnected) {
-                    true -> imgFlag.load(item.flags.png) {
-                        crossfade(true)
+                val isConnected: Boolean = Prefs[R.string.has_internet_connection.toString()]
+                if (isConnected) {
+                    imgFlag.scaleType = ImageView.ScaleType.FIT_XY
+                    imgFlag.load(item.flags.png) {
                         placeholder(R.drawable.flag_placeholder)
-                        scale(Scale.FILL)
                     }
-                    false -> imgFlag.load(R.drawable.flag_placeholder) {
-                        crossfade(true)
+                } else {
+                    imgFlag.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                    imgFlag.load(R.drawable.flag_placeholder) {
                         placeholder(R.drawable.flag_placeholder)
-                        scale(Scale.FIT)
                     }
                 }
-
                 root.setOnClickListener {
                     val intent = Intent(context, CountryDetailsActivity::class.java)
-                    intent.putExtra("name", item.name)
+                    intent.putExtra(R.string.intent_extra_attribute_country_name.toString(), item.name)
                     context.startActivity(intent)
                 }
             }
@@ -78,14 +73,14 @@ class CountryAdapter : RecyclerView.Adapter<CountryAdapter.ViewHolder>() {
             oldItem: Country,
             newItem: Country
         ): Boolean {
-            return oldItem.name == newItem.name
+            return oldItem == newItem
         }
 
         override fun areContentsTheSame(
             oldItem: Country,
             newItem: Country
         ): Boolean {
-            return oldItem == newItem
+            return oldItem.flags.png == newItem.flags.png
         }
     }
 

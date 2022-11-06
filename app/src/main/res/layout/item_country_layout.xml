@@ -104,7 +104,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/RoundedImageView"
+            app:shapeAppearanceOverlay="@style/rounded_image_view"
             app:srcCompat="@drawable/flag_placeholder" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,10 +2,10 @@ package com.martinbg.androidlocalstorage.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.martinbg.androidlocalstorage.utils.Constants.APP_PREFERENCES
 
 object Prefs {
 
-    private const val APP_PREFERENCES = "settings"
     lateinit var preferences: SharedPreferences
 
     fun init(context: Context) {
