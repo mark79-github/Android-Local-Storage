@@ -14,17 +14,17 @@ data class Country(
     @Embedded
     var flags: Flags,
     @ColumnInfo
-    var region: String?,
+    var region: String,
     @ColumnInfo
-    var subregion: String?,
+    var subregion: String,
     @ColumnInfo
-    var population: String?,
+    var population: String,
     @ColumnInfo
     var area: String?,
     @ColumnInfo
-    var nativeName: String?,
+    var nativeName: String,
     @ColumnInfo
-    var numericCode: String?,
+    var numericCode: String,
     @ColumnInfo
     var cioc: String?
 )

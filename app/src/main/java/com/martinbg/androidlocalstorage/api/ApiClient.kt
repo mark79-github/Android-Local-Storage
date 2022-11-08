@@ -14,7 +14,6 @@ class ApiClient {
         val url = chain.request()
             .url
             .newBuilder()
-//            .addQueryParameter("api_key", API_KEY)
             .build()
 
         val request = chain.request()
@@ -23,7 +22,6 @@ class ApiClient {
             .build()
         return@Interceptor chain.proceed(request)
     }
-
 
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(requestInterceptor)

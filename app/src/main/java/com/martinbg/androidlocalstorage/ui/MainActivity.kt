@@ -90,14 +90,7 @@ class MainActivity : AppCompatActivity() {
                                                 adapter = countryAdapter
                                             }
                                             dao.insertAll(data)
-                                            val date: Date = Calendar.getInstance().time
-                                            val dateFormat: DateFormat =
-                                                SimpleDateFormat(
-                                                    "dd MMM yyyy HH:mm:ss",
-                                                    Locale.ROOT
-                                                )
-                                            val strDate: String = dateFormat.format(date)
-
+                                            val strDate: String = getCurrentDateTimeAsString()
                                             dao.insertInfo(Info(strDate))
                                             tvLastFetchedDatetime.text = dao.getLastInfo()!!.date
                                             tvRecordsCount.text = data.size.toString()
@@ -164,6 +157,16 @@ class MainActivity : AppCompatActivity() {
             super.onLost(network)
             Prefs[R.string.has_internet_connection.toString()] = false
         }
+    }
+
+    private fun getCurrentDateTimeAsString(): String {
+        val date: Date = Calendar.getInstance().time
+        val dateFormat: DateFormat =
+            SimpleDateFormat(
+                "dd MMM yyyy HH:mm:ss",
+                Locale.ROOT
+            )
+        return dateFormat.format(date)
     }
 }
 
