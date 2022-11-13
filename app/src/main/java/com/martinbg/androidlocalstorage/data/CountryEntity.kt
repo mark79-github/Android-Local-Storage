@@ -6,7 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "country")
-data class Country(
+data class CountryEntity(
     @PrimaryKey
     var name: String,
     @ColumnInfo

@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.martinbg.androidlocalstorage.data.Country
+import com.martinbg.androidlocalstorage.data.CountryEntity
 import com.martinbg.androidlocalstorage.data.Info
 
-@Database(entities = [Country::class, Info::class], version = 1, exportSchema = false)
+@Database(entities = [CountryEntity::class, Info::class], version = 1, exportSchema = false)
 abstract class CountryDatabase : RoomDatabase() {
     abstract fun countryDao(): CountryDao
 
@@ -25,7 +25,8 @@ abstract class CountryDatabase : RoomDatabase() {
                     context.applicationContext,
                     CountryDatabase::class.java,
                     "country.db"
-                ).allowMainThreadQueries()
+                )
+//                    .allowMainThreadQueries()
                     .build()
                 INSTANCE = instance
                 return instance

@@ -1,7 +1,7 @@
 package com.martinbg.androidlocalstorage.db
 
 import androidx.room.*
-import com.martinbg.androidlocalstorage.data.Country
+import com.martinbg.androidlocalstorage.data.CountryEntity
 import com.martinbg.androidlocalstorage.data.Info
 
 
@@ -9,29 +9,32 @@ import com.martinbg.androidlocalstorage.data.Info
 interface CountryDao {
 
     @Query("SELECT * FROM country")
-    fun getAll(): List<Country>
+    suspend fun getAll(): List<CountryEntity>
 
     @Query("SELECT * FROM country WHERE country.name = :name")
-    fun getCountryByName(name: String): Country
+    suspend fun getCountryByName(name: String): CountryEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(country: Country)
+    suspend fun insert(country: CountryEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(countries: List<Country>)
+    suspend fun insertAll(countries: List<CountryEntity>)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun update(country: Country)
+    suspend fun update(country: CountryEntity)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateAll(countries: List<Country>)
+    suspend fun updateAll(countries: List<CountryEntity>)
 
     @Delete
-    fun delete(country: Country)
+    suspend fun delete(country: CountryEntity)
+
+    @Query("DELETE FROM country")
+    suspend fun deleteAll()
 
     @Insert
-    fun insertInfo(info: Info)
+    suspend fun insertInfo(info: Info)
 
     @Query("select * from info order by id desc limit 1")
-    fun getLastInfo(): Info?
+    suspend fun getLastInfo(): Info?
 }

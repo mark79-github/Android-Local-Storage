@@ -5,15 +5,18 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import coil.load
 import com.martinbg.androidlocalstorage.R
 import com.martinbg.androidlocalstorage.api.ApiClient
 import com.martinbg.androidlocalstorage.api.ApiServices
-import com.martinbg.androidlocalstorage.data.Country
+import com.martinbg.androidlocalstorage.data.CountryEntity
+import com.martinbg.androidlocalstorage.data.CountryModel
 import com.martinbg.androidlocalstorage.databinding.ActivityCountryDetailsBinding
 import com.martinbg.androidlocalstorage.db.CountryDao
 import com.martinbg.androidlocalstorage.db.CountryDatabase
 import com.martinbg.androidlocalstorage.utils.Prefs
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -42,7 +45,6 @@ class CountryDetailsActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
         val countryName =
             intent.getStringExtra(R.string.intent_extra_attribute_country_name.toString())
                 .toString()
@@ -52,10 +54,10 @@ class CountryDetailsActivity : AppCompatActivity() {
                 binding.apply {
                     progressBar.visibility = View.VISIBLE
                     val countriesApi = api.getCountryByName(countryName)
-                    countriesApi.enqueue(object : Callback<List<Country>> {
+                    countriesApi.enqueue(object : Callback<List<CountryModel>> {
                         override fun onResponse(
-                            call: Call<List<Country>>,
-                            response: Response<List<Country>>
+                            call: Call<List<CountryModel>>,
+                            response: Response<List<CountryModel>>
                         ) {
                             progressBar.visibility = View.GONE
                             when (response.code()) {
@@ -65,15 +67,7 @@ class CountryDetailsActivity : AppCompatActivity() {
                                         val flag = country.flags.png
                                         showImage(imgCountryFlag, flag)
                                         showImage(imgCountryFlagBackground, flag)
-                                        tvCountryName.text = country.name
-                                        tvCountryCapital.text = country.capital
-                                        tvRegionData.text = country.region
-                                        tvSubregionData.text = country.subregion
-                                        tvPopulationData.text = country.population.toString()
-                                        tvAreaData.text = calculateAreaToString(country.area)
-                                        tvNativeNameData.text = country.nativeName
-                                        tvNumericCodeData.text = country.numericCode
-                                        tvAcronymData.text = country.cioc
+                                        updateUI(country)
                                     }
                                 }
                                 in 300..599 -> {
@@ -86,7 +80,7 @@ class CountryDetailsActivity : AppCompatActivity() {
                             }
                         }
 
-                        override fun onFailure(call: Call<List<Country>>, t: Throwable) {
+                        override fun onFailure(call: Call<List<CountryModel>>, t: Throwable) {
                             progressBar.visibility = View.GONE
                             Log.e("onFailure", "Error : ${t.message}")
                         }
@@ -94,23 +88,44 @@ class CountryDetailsActivity : AppCompatActivity() {
                 }
             }
             false -> {
-                binding.progressBar.visibility = View.VISIBLE
-                val country = dao.getCountryByName(countryName)
                 binding.apply {
-                    progressBar.visibility = View.GONE
-                    showImage(imgCountryFlag, R.drawable.flag_placeholder)
-                    tvCountryName.text = country.name
-                    tvCountryCapital.text = country.capital
-                    tvRegionData.text = country.region
-                    tvSubregionData.text = country.subregion
-                    tvPopulationData.text = country.population.toString()
-                    tvAreaData.text = calculateAreaToString(country.area)
-                    tvNativeNameData.text = country.nativeName
-                    tvNumericCodeData.text = country.numericCode
-                    tvAcronymData.text = country.cioc
-                    progressBar.visibility = View.GONE
+                    progressBar.visibility = View.VISIBLE
+                    lifecycleScope.launch {
+                        val country = dao.getCountryByName(countryName)
+                        progressBar.visibility = View.GONE
+                        showImage(imgCountryFlag, R.drawable.flag_placeholder)
+                        updateUI(country)
+                    }
                 }
             }
+        }
+    }
+
+    private fun updateUI(country: CountryEntity) {
+        binding.apply {
+            tvCountryName.text = country.name
+            tvCountryCapital.text = country.capital
+            tvRegionData.text = country.region
+            tvSubregionData.text = country.subregion
+            tvPopulationData.text = country.population
+            tvAreaData.text = calculateAreaToString(country.area)
+            tvNativeNameData.text = country.nativeName
+            tvNumericCodeData.text = country.numericCode
+            tvAcronymData.text = country.cioc
+        }
+    }
+
+    private fun updateUI(country: CountryModel) {
+        binding.apply {
+            tvCountryName.text = country.name
+            tvCountryCapital.text = country.capital
+            tvRegionData.text = country.region
+            tvSubregionData.text = country.subregion
+            tvPopulationData.text = country.population
+            tvAreaData.text = calculateAreaToString(country.area)
+            tvNativeNameData.text = country.nativeName
+            tvNumericCodeData.text = country.numericCode
+            tvAcronymData.text = country.cioc
         }
     }
 

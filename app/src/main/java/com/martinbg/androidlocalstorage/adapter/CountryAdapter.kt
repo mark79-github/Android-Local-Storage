@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.martinbg.androidlocalstorage.R
-import com.martinbg.androidlocalstorage.data.Country
+import com.martinbg.androidlocalstorage.data.CountryModel
 import com.martinbg.androidlocalstorage.databinding.ItemCountryLayoutBinding
 import com.martinbg.androidlocalstorage.ui.CountryDetailsActivity
 import com.martinbg.androidlocalstorage.utils.Prefs
@@ -42,7 +42,7 @@ class CountryAdapter : RecyclerView.Adapter<CountryAdapter.ViewHolder>() {
     }
 
     inner class ViewHolder : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Country) {
+        fun bind(item: CountryModel) {
             binding.apply {
                 tvCName.text = item.name
                 tvCCapital.text = item.capital
@@ -68,17 +68,17 @@ class CountryAdapter : RecyclerView.Adapter<CountryAdapter.ViewHolder>() {
         }
     }
 
-    private val differCallback = object : DiffUtil.ItemCallback<Country>() {
+    private val differCallback = object : DiffUtil.ItemCallback<CountryModel>() {
         override fun areItemsTheSame(
-            oldItem: Country,
-            newItem: Country
+            oldItem: CountryModel,
+            newItem: CountryModel
         ): Boolean {
             return oldItem == newItem
         }
 
         override fun areContentsTheSame(
-            oldItem: Country,
-            newItem: Country
+            oldItem: CountryModel,
+            newItem: CountryModel
         ): Boolean {
             return oldItem.flags.png == newItem.flags.png
         }
